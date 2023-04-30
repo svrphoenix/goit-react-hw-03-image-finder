@@ -3,7 +3,11 @@ import { CloseButton, Img } from './Modal.styled';
 import ReactModal from 'react-modal';
 
 const customStyles = {
+  overlay: {
+    zIndex: 998,
+  },
   content: {
+    zIndex: 999,
     top: '50%',
     left: '50%',
     right: 'auto',

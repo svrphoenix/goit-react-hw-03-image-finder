@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { ThreeDots } from 'react-loader-spinner';
+import { ThreeDots as Loader } from 'react-loader-spinner';
 import { readPixabayImages, ITEMS_PER_PAGE } from 'services/pixabay-api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -15,7 +15,6 @@ export class App extends Component {
     query: '',
     loadMore: false,
     isLoading: false,
-    // error: null,
   };
 
   handleSubmit = ({ searchQuery }) => {
@@ -71,13 +70,13 @@ export class App extends Component {
 
   render() {
     const { images, loadMore, isLoading } = this.state;
+
     return (
       <Layout>
         <Searchbar onSubmit={this.handleSubmit} />
-
-        {(images.length>0)&&<ImageGallery images={images} />}
+        {images.length > 0 && <ImageGallery images={images} />}
         {isLoading && (
-          <ThreeDots
+          <Loader
             height="80"
             width="80"
             radius="9"
