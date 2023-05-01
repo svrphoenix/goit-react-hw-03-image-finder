@@ -26,7 +26,7 @@ export class App extends Component {
     });
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
     if (prevState.query !== query || prevState.page !== page) {
       this.loadImages();
@@ -36,22 +36,24 @@ export class App extends Component {
   loadImages = async () => {
     const { query, page } = this.state;
 
-    this.setState({ isLoading: true, error: null });
+    this.setState({ isLoading: true });
 
     try {
-      const imagesObject = await readPixabayImages(query, page);
-      const imagesArray = imagesObject.hits;
+      const results = await readPixabayImages(query, page);
+      const images = results.hits;
+      const total = results.totalHits;
 
-      if (imagesObject.totalHits === 0) {
+      if (total === 0) {
         toast.error(
           'Sorry, there are no images matching your search query. Please try again.'
         );
+        return;
       }
-      const isPagination = imagesObject.totalHits > page * ITEMS_PER_PAGE;
 
+      const isPagination = total > page * ITEMS_PER_PAGE;
       this.setState(state => {
         return {
-          images: [...state.images, ...imagesArray],
+          images: [...state.images, ...images],
           loadMore: isPagination,
         };
       });
