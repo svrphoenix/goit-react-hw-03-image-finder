@@ -18,6 +18,8 @@ export class App extends Component {
   };
 
   handleSubmit = ({ searchQuery }) => {
+    const { query, page } = this.state;
+    if (searchQuery === query && page === 1) return;
     this.setState({
       query: searchQuery.trim(),
       images: [],
@@ -40,7 +42,14 @@ export class App extends Component {
 
     try {
       const results = await readPixabayImages(query, page);
-      const images = results.hits;
+      const images = results.hits.map(
+        ({ id, webformatURL, largeImageURL, tags }) => ({
+          id,
+          webformatURL,
+          largeImageURL,
+          tags,
+        })
+      );
       const total = results.totalHits;
 
       if (total === 0) {
@@ -51,23 +60,15 @@ export class App extends Component {
       }
 
       const isPagination = total > page * ITEMS_PER_PAGE;
-      this.setState(state => {
-        return {
-          images: [...state.images, ...images],
-          loadMore: isPagination,
-        };
-      });
+      this.setState(state => ({
+        images: [...state.images, ...images],
+        loadMore: isPagination,
+      }));
     } catch (error) {
       toast.error('Error happend on server. Please, reload webpage.');
     } finally {
       this.setState({ isLoading: false });
     }
-  };
-
-  handleMoreButtonClick = () => {
-    this.setState(state => ({
-      page: state.page + 1,
-    }));
   };
 
   render() {
@@ -90,7 +91,13 @@ export class App extends Component {
           />
         )}
         {!isLoading && loadMore && (
-          <Button onClick={this.handleMoreButtonClick} />
+          <Button
+            onClick={() => {
+              this.setState(state => ({
+                page: state.page + 1,
+              }));
+            }}
+          />
         )}
         <Toaster position="top-right" reverseOrder={false} />
         <GlobalStyle />

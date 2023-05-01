@@ -38,14 +38,12 @@ export class ImageGalleryItem extends Component {
         <a href={largeImageURL} onClick={this.openModal}>
           <Image src={webformatURL} alt={tags} />
         </a>
-        {isModalOpen && (
-          <Modal
-            isOpen={isModalOpen}
-            onClose={this.closeModal}
-            url={largeImageURL}
-            alt={tags}
-          />
-        )}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={this.closeModal}
+          url={largeImageURL}
+          alt={tags}
+        />
       </Item>
     );
   }
